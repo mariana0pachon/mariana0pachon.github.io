@@ -1,0 +1,43 @@
+/* Shared styles for canvas-based playground pages */
+
+body.project { display: block; overflow: hidden; height: 100vh; }
+
+canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; }
+
+/* ── Overlay UI ─────────────────────────────────── */
+
+.ui { position: fixed; z-index: 10; pointer-events: none; width: 350px; }
+.ui-top { top: 40px; left: 48px; display: flex; align-items: center; gap: 10px; width: auto; }
+.ui-bot { bottom: 40px; left: 48px; background: rgba(39,40,34,0.72); padding: 20px 24px; }
+.ui a { pointer-events: all; }
+
+.project-back, #infoBtn {
+  display: inline-flex; align-items: center;
+  background: rgba(39,40,34,0.72); padding: 6px 10px;
+  font-size: 11px; letter-spacing: 0.1em; line-height: 1;
+}
+#infoBtn, #closeBtn {
+  pointer-events: all; cursor: pointer;
+  border: none; color: #fff; font-family: inherit;
+}
+#infoBtn:hover { background: rgba(39,40,34,1); }
+#closeBtn { background: none; font-size: 13px; padding: 0; }
+
+.panel-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.panel-header h1 { margin-bottom: 0; }
+.ui h1 { font-size: 24px; font-weight: 400; margin-bottom: 10px; }
+.ui p { font-size: 13px; line-height: 1.8; color: rgba(255,255,255,0.55); margin-bottom: 6px; }
+.ui a:not(.project-back) { color: rgba(255,255,255,0.55); text-decoration: underline; }
+
+kbd { font-family: inherit; background: rgba(255,255,255,0.1); padding: 1px 5px; border-radius: 3px; }
+hr { margin: 10px 0; }
+
+/* ── Start gate ─────────────────────────────────── */
+
+#gate {
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(39,40,34,0.88); cursor: pointer;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
