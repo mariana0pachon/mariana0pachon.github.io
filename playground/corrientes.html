@@ -26,6 +26,13 @@
       <button id="closeBtn">✕</button>
     </div>
     <p>
+      <strong>Commands:</strong><br>
+      <kbd>space</kbd> new image<br>
+      <kbd>↑ ↓</kbd> scan speed<br>
+      <label id="uploadLabel">upload image</label> or drop anywhere
+    </p>
+    <hr>
+    <p>
       A red line scans the image left to right, sampling the average RGB of each column to drive three sine voices:<br>
       <strong>red</strong> → pitch of a short tone<br>
       <strong>green</strong> → pitch of a kick <br>
@@ -36,15 +43,8 @@
     <p>
       The original Processing code sent RGB over OSC to a PurrData patch with cells created by
       <a href="https://www.instagram.com/xamanza/" target="_blank" rel="noopener noreferrer">Xavi Manzanares (@xamanza)</a>.
-      Translated to Canvas and Web Audio API with the help of Claude AI.
     </p>
-    <hr>
-    <p>
-      <strong>Commands:</strong><br>
-      <kbd>space</kbd> new image<br>
-      <kbd>↑ ↓</kbd> scan speed<br>
-      <label id="uploadLabel">upload image</label> or drop anywhere
-    </p>
+    <p>Translated to Canvas API and Web Audio API with the help of Claude AI.</p>
     <input type="file" id="fileInput" accept="image/*" multiple>
     <p id="corsWarn" style="display:none; color:rgba(255,120,80,0.8); font-size:11px; margin-top:8px;">
       pixel reads blocked — open via a local server<br>(VS Code Live Server or <code>python3 -m http.server</code>)
