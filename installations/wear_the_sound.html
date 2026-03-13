@@ -1,45 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>wear the sound</title>
-  <link rel="stylesheet" href="../styles.css">
-</head>
-<body class="project">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wear the sound</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="project">
+    <div class="project-image has-slideshow" id="slideshow">
+      <div
+        class="slideshow-slide active"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/1.png');
+        "
+      ></div>
+      <div
+        class="slideshow-slide"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/2.png');
+        "
+      ></div>
+      <div
+        class="slideshow-slide"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/3.png');
+        "
+      ></div>
+      <div
+        class="slideshow-slide"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/4.png');
+        "
+      ></div>
+      <div
+        class="slideshow-slide"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/5.png');
+        "
+      ></div>
+      <div
+        class="slideshow-slide"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/6.png');
+        "
+      ></div>
+      <div
+        class="slideshow-slide"
+        style="
+          background-image: url('../assets/installations/wear_the_sound/7.JPG');
+        "
+      ></div>
+    </div>
 
-  <div class="project-image has-slideshow" id="slideshow">
-    <div class="slideshow-slide active" style="background-image: url('../assets/installations/wear_the_sound/1.png')"></div>
-    <div class="slideshow-slide" style="background-image: url('../assets/installations/wear_the_sound/2.png')"></div>
-    <div class="slideshow-slide" style="background-image: url('../assets/installations/wear_the_sound/3.png')"></div>
-    <div class="slideshow-slide" style="background-image: url('../assets/installations/wear_the_sound/4.png')"></div>
-    <div class="slideshow-slide" style="background-image: url('../assets/installations/wear_the_sound/5.png')"></div>
-    <div class="slideshow-slide" style="background-image: url('../assets/installations/wear_the_sound/6.png')"></div>
-    <div class="slideshow-slide" style="background-image: url('../assets/installations/wear_the_sound/7.JPG')"></div>
-  </div>
+    <div class="project-content">
+      <a class="project-back" href="../index.html">← back</a>
+      <h1>Wear the Sound</h1>
+      <h5>
+        Exhibited at the Mies Van Der Rohe Pavilion in the 2025 Sónar +D and at
+        the BCN Games Fest.
+      </h5>
 
-  <div class="project-content">
-    <a class="project-back" href="../index.html">← back</a>
-    <h1>Wear the Sound</h1>
-    <h5>Initially exhibited at the Mies Van Der Rohe Pavilion in the 2025 Sónar +D.</h5>
+      <p>
+        This installation responds to the need of attending music festivals
+        without crowds, with moderate music volume, accessible to people with
+        reduced mobility, and supported by a team dedicated to facilitating the
+        experience for all visitors. It's a proposal that becomes an
+        experimental space open to feel the music with your body.
+      </p>
+      <p>
+        A series of haptic and sensory interfaces take the form of reclining
+        supports or wearables that can be worn and shared with others, allowing
+        music to be experienced through the skin.
+      </p>
+      <p>
+        We collaborated with music artist
+        <a
+          href="https://www.instagram.com/xamanza/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Xavi Manzanares (@xamanza)</a
+        >
+        who created a music console that connects to the wearable via OSC.
+        Through the console, people can modify the music, and the wearable's
+        vibrations shift simultaneously, creating a unique, immersive
+        experience.
+      </p>
+      <p>
+        This project is a prototype of a Sónar space designed for a wider
+        audience that aims to leave no one out.
+      </p>
+      <p>
+        This experience took place at the Mies Van Der Rohe Pavilion, an icon of
+        design. We took the architecture of the space into account when
+        designing the wearables.
+      </p>
+    </div>
 
-    <p>This installation responds to the need of attending music festivals without crowds, with moderate music volume, accessible to people with reduced mobility, and supported by a team dedicated to facilitating the experience for all visitors. It's a proposal that becomes an experimental space open to feel the music with your body.
-    <p>A series of haptic and sensory interfaces take the form of reclining supports or wearables that can be worn and shared with others, allowing music to be experienced through the skin.</p>
-    <p>We collaborated with music artist <a href="https://www.instagram.com/xamanza/" target="_blank" rel="noopener noreferrer">Xavi Manzanares (@xamanza)</a> who created a music console that connects to the wearable via OSC. Through the console, people can modify the music, and the wearable's vibrations shift simultaneously, creating a unique, immersive experience.</p>
-    <p>This project is a prototype of a Sónar space designed for a wider audience that aims to leave no one out.</p>
-    <p>This experience took place at the Mies Van Der Rohe Pavilion, an icon of design. We took the architecture of the space into account when designing the wearables.</p>
-  </div>
+    <script>
+      const slides = document.querySelectorAll('.slideshow-slide');
+      let current = 0;
 
-  <script>
-    const slides = document.querySelectorAll('.slideshow-slide');
-    let current = 0;
-
-    setInterval(() => {
-      slides[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('active');
-    }, 3000);
-  </script>
-
-</body>
+      setInterval(() => {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+      }, 3000);
+    </script>
+  </body>
 </html>

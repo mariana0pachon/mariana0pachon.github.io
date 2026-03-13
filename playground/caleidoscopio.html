@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>caleidoscopio</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="playground.css" />
+  </head>
+  <body class="project">
+    <div class="ui ui-top">
+      <a class="project-back" href="../index.html">← back</a>
+      <button id="infoBtn">INFO</button>
+    </div>
+
+    <div class="ui ui-bot" id="infoPanel">
+      <div class="panel-header">
+        <h1>caleidoscopio</h1>
+        <button id="closeBtn">✕</button>
+      </div>
+      <p>
+        <kbd>r</kbd> reset<br />
+        <kbd>s</kbd> save<br />
+        <kbd>espacio</kbd> play/pause<br />
+        <kbd>d</kbd> diameter<br />
+        <kbd>a</kbd> angle<br />
+        <kbd>f</kbd> filling (line or filled)<br />
+        click anywhere to draw a flower
+      </p>
+      <hr />
+      <p>
+        Originally built in Processing and translated to p5.js with the help of Claude AI
+        to share on the web.
+      </p>
+      <p>
+        I like the
+        <a
+          href="https://github.com/mariana0pachon/visuales/blob/main/caleidoscopio/caleidoscopio.pde"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Processing version</a
+        >
+        more, I was able to play with transparent spheres creating interesting
+        effects. The way spheres are handled in p5.js and the fact that they
+        need light to be setup made it harder to create a color mixing effect.
+      </p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.0/p5.min.js"></script>
+    <script>
+      let play = true;
+      let bgHue = 360;
+
+      let florX = 0;
+      let florY = 0;
+      let n = 0;
+      let c = 10;
+
+      let tresD = true;
+
+      let angles = [137.5, 137.3, 137.6];
+      let angleIdx = 0;
+
+      let radiuses = [20, 5];
+      let radiusIdx = 0;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        colorMode(HSB, 360, 255, 255, 255);
+        background(bgHue, 0, 255);
+        florX = width / 2;
+        florY = height / 2;
+      }
+
+      function draw() {
+        if (play) {
+          flor();
+        }
+      }
+
+      function flor() {
+        const angle = n * radians(angles[angleIdx]);
+        const radius = c * sqrt(n);
+
+        const x = cos(angle) * radius + florX;
+        const y = sin(angle) * radius + florY;
+
+        noStroke();
+        fill(n % 360, 255, 255, 30);
+
+        if (tresD) {
+          drawMeshCircle(x, y, c * radiuses[radiusIdx], n % 360);
+        } else {
+          fill(n % 360, 255, 255, 30);
+          circle(x, y, c * radiuses[radiusIdx]);
+        }
+
+        n++;
+      }
+
+      function drawMeshCircle(x, y, size, hue) {
+        noFill();
+        strokeWeight(2);
+
+        for (let i = 1; i <= 6; i++) {
+          const s = size * (i / 6);
+          stroke(hue, 255, 255, 10 + i * 4);
+          circle(x, y, s);
+        }
+      }
+
+      function keyPressed() {
+        if (key === ' ') {
+          play = !play;
+        }
+
+        if (key === 'r') {
+          // reset
+          florX = width / 2;
+          florY = height / 2;
+          limpiar();
+        }
+
+        if (key === 'a') {
+          // angle
+          angleIdx = (angleIdx + 1) % angles.length;
+          limpiar();
+        }
+
+        if (key === 'd') {
+          // diameter
+          radiusIdx = (radiusIdx + 1) % radiuses.length;
+          limpiar();
+        }
+
+        if (key === 'f') {
+          // filling
+          tresD = !tresD;
+          limpiar();
+        }
+
+        if (key === 's') {
+          // save
+          saveCanvas(
+            'caleidoscopio_' +
+              day() +
+              month() +
+              year() +
+              hour() +
+              minute() +
+              second(),
+            'png'
+          );
+        }
+      }
+
+      function limpiar() {
+        background(bgHue, 0, 255);
+        n = 0;
+        play = true;
+      }
+
+      function mousePressed() {
+        florX = mouseX;
+        florY = mouseY;
+        n = 0;
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+        limpiar();
+      }
+
+      const panel = document.getElementById('infoPanel');
+      document.getElementById('infoBtn').addEventListener('click', () => {
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      });
+      document.getElementById('closeBtn').addEventListener('click', () => {
+        panel.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>

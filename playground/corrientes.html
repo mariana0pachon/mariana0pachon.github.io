@@ -1,281 +1,403 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>corrientes</title>
-  <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="playground.css">
-  <style>
-    #uploadLabel { cursor: pointer; text-decoration: underline; pointer-events: all; }
-    #fileInput { display: none; }
-  </style>
-</head>
-<body class="project">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>corrientes</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="playground.css" />
+    <style>
+      #uploadLabel {
+        cursor: pointer;
+        text-decoration: underline;
+        pointer-events: all;
+      }
+      #fileInput {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="project">
+    <canvas id="c"></canvas>
 
-  <canvas id="c"></canvas>
-
-  <div class="ui ui-top">
-    <a class="project-back" href="../index.html">← back</a>
-    <button id="infoBtn">INFO</button>
-  </div>
-
-  <div class="ui ui-bot" id="infoPanel">
-    <div class="panel-header">
-      <h1>corrientes</h1>
-      <button id="closeBtn">✕</button>
+    <div class="ui ui-top">
+      <a class="project-back" href="../index.html">← back</a>
+      <button id="infoBtn">INFO</button>
     </div>
-    <p>
-      <strong>Commands:</strong><br>
-      <kbd>space</kbd> new image<br>
-      <kbd>↑ ↓</kbd> scan speed<br>
-      <label id="uploadLabel">upload image</label> or drop anywhere
-    </p>
-    <hr>
-    <p>
-      A red line scans the image left to right, sampling the average RGB of each column to drive three sine voices:<br>
-      <strong>red</strong> → pitch of a short tone<br>
-      <strong>green</strong> → pitch of a kick <br>
-      <strong>blue</strong> → pitch of a slow sine
-    </p>
-    <hr>
-    <p>Originally built with Processing and PurrData.</p>
-    <p>
-      The original Processing code sent RGB over OSC to a PurrData patch with cells created by
-      <a href="https://www.instagram.com/xamanza/" target="_blank" rel="noopener noreferrer">Xavi Manzanares (@xamanza)</a>.
-    </p>
-    <p>Translated to Canvas API and Web Audio API with the help of Claude AI.</p>
-    <input type="file" id="fileInput" accept="image/*" multiple>
-    <p id="corsWarn" style="display:none; color:rgba(255,120,80,0.8); font-size:11px; margin-top:8px;">
-      pixel reads blocked — open via a local server<br>(VS Code Live Server or <code>python3 -m http.server</code>)
-    </p>
-  </div>
 
-  <div id="gate">click to begin</div>
+    <div class="ui ui-bot" id="infoPanel">
+      <div class="panel-header">
+        <h1>corrientes</h1>
+        <button id="closeBtn">✕</button>
+      </div>
+      <p>
+        <strong>Commands:</strong><br />
+        <kbd>space</kbd> new image<br />
+        <kbd>↑ ↓</kbd> scan speed<br />
+        <label id="uploadLabel">upload image</label> or drop anywhere
+      </p>
+      <hr />
+      <p>
+        A red line scans the image left to right, sampling the average RGB of
+        each column to drive three sine voices:<br />
+        <strong>red</strong> → pitch of a short tone<br />
+        <strong>green</strong> → pitch of a kick <br />
+        <strong>blue</strong> → pitch of a slow sine
+      </p>
+      <hr />
+      <p>Originally built with Processing and PurrData.</p>
+      <p>
+        The original Processing code sent RGB over OSC to a PurrData patch with
+        cells created by
+        <a
+          href="https://www.instagram.com/xamanza/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Xavi Manzanares (@xamanza)</a
+        >.
+      </p>
+      <p>
+        Translated to Canvas API and Web Audio API with the help of Claude AI.
+      </p>
+      <input type="file" id="fileInput" accept="image/*" multiple />
+      <p
+        id="corsWarn"
+        style="
+          display: none;
+          color: rgba(255, 120, 80, 0.8);
+          font-size: 11px;
+          margin-top: 8px;
+        "
+      >
+        pixel reads blocked — open via a local server<br />(VS Code Live Server
+        or <code>python3 -m http.server</code>)
+      </p>
+    </div>
 
-  <script>
-    // ─── Config ───────────────────────────────────────────────────────────────
-    const BUF_SIZE     = 10;   // color ring buffer (mirrors tabwrite 10 in PurrData)
-    const BASE_INTERVAL = 0.35; // seconds between steps at scanSpeed = 2
-    let   scanSpeed    = 2;    // px per frame
+    <div id="gate">click to begin</div>
 
-    // ─── Canvas ───────────────────────────────────────────────────────────────
-    const canvas = document.getElementById('c');
-    const ctx    = canvas.getContext('2d', { willReadFrequently: true });
+    <script>
+      // ─── Config ───────────────────────────────────────────────────────────────
+      const BUF_SIZE = 10; // color ring buffer (mirrors tabwrite 10 in PurrData)
+      const BASE_INTERVAL = 0.35; // seconds between steps at scanSpeed = 2
+      let scanSpeed = 2; // px per frame
 
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', resize);
+      // ─── Canvas ───────────────────────────────────────────────────────────────
+      const canvas = document.getElementById('c');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    // ─── Images ───────────────────────────────────────────────────────────────
-    // Place images in playground/img/ (img/1.jpeg, img/2.jpeg, img/3.png, img/4.png)
-    // Requires a local server — canvas pixel reads are blocked on file://
-    const IMAGE_PATHS = [
-      '../assets/playground/corrientes/1.jpeg',
-      '../assets/playground/corrientes/2.jpeg',
-      '../assets/playground/corrientes/3.png',
-      '../assets/playground/corrientes/4.png',
-    ];
-    let loadedImages = [], currentImage = null, imageIdx = 0;
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
 
-    function preload() {
-      // Load in order so the index matches the original sequence
-      let loaded = 0;
-      IMAGE_PATHS.forEach((src, i) => {
-        const img   = new Image();
-        img.onload  = () => { loadedImages[i] = img; if (++loaded === IMAGE_PATHS.length) pickImage(); };
-        img.onerror = () => { if (++loaded === IMAGE_PATHS.length && loadedImages.filter(Boolean).length) pickImage(); };
-        img.src = src;
-      });
-    }
+      // ─── Images ───────────────────────────────────────────────────────────────
+      // Place images in playground/img/ (img/1.jpeg, img/2.jpeg, img/3.png, img/4.png)
+      // Requires a local server — canvas pixel reads are blocked on file://
+      const IMAGE_PATHS = [
+        '../assets/playground/corrientes/1.jpeg',
+        '../assets/playground/corrientes/2.jpeg',
+        '../assets/playground/corrientes/3.png',
+        '../assets/playground/corrientes/4.png',
+      ];
+      let loadedImages = [],
+        currentImage = null,
+        imageIdx = 0;
 
-    function pickImage() {
-      const available = loadedImages.filter(Boolean);
-      if (!available.length) return;
-      currentImage = available[imageIdx % available.length];
-      imageIdx++;
-      lineX = 0;
-    }
+      function preload() {
+        // Load in order so the index matches the original sequence
+        let loaded = 0;
+        IMAGE_PATHS.forEach((src, i) => {
+          const img = new Image();
+          img.onload = () => {
+            loadedImages[i] = img;
+            if (++loaded === IMAGE_PATHS.length) pickImage();
+          };
+          img.onerror = () => {
+            if (
+              ++loaded === IMAGE_PATHS.length &&
+              loadedImages.filter(Boolean).length
+            )
+              pickImage();
+          };
+          img.src = src;
+        });
+      }
 
-    // ─── Scan state ───────────────────────────────────────────────────────────
-    let lineX  = 0;
-    let bufR   = new Float32Array(BUF_SIZE);
-    let bufG   = new Float32Array(BUF_SIZE);
-    let bufB   = new Float32Array(BUF_SIZE);
-    let bufIdx = 0;
-    let curR   = 0, curG = 0, curB = 0, curX = 0;
+      function pickImage() {
+        const available = loadedImages.filter(Boolean);
+        if (!available.length) return;
+        currentImage = available[imageIdx % available.length];
+        imageIdx++;
+        lineX = 0;
+      }
 
-    let corsBlocked = false;
+      // ─── Scan state ───────────────────────────────────────────────────────────
+      let lineX = 0;
+      let bufR = new Float32Array(BUF_SIZE);
+      let bufG = new Float32Array(BUF_SIZE);
+      let bufB = new Float32Array(BUF_SIZE);
+      let bufIdx = 0;
+      let curR = 0;
+      let curG = 0;
+      let curB = 0;
+      let curX = 0;
 
-    function sampleColumn() {
-      curX = lineX / canvas.width;
-      let data;
-      try { data = ctx.getImageData(lineX, 0, 1, canvas.height).data; }
-      catch (e) {
-        if (!corsBlocked) {
-          corsBlocked = true;
-          document.getElementById('corsWarn').style.display = 'block';
+      let corsBlocked = false;
+
+      function sampleColumn() {
+        curX = lineX / canvas.width;
+        let data;
+        try {
+          data = ctx.getImageData(lineX, 0, 1, canvas.height).data;
+        } catch (e) {
+          if (!corsBlocked) {
+            corsBlocked = true;
+            document.getElementById('corsWarn').style.display = 'block';
+          }
+          // fallback: cycle through dummy values so at least audio runs
+          bufR[bufIdx] = 0.5;
+          bufG[bufIdx] = 0.3;
+          bufB[bufIdx] = 0.7;
+          bufIdx = (bufIdx + 1) % BUF_SIZE;
+          return;
         }
-        // fallback: cycle through dummy values so at least audio runs
-        bufR[bufIdx] = 0.5; bufG[bufIdx] = 0.3; bufB[bufIdx] = 0.7;
+        corsBlocked = false;
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        const n = canvas.height;
+        for (let y = 0; y < n; y++) {
+          const i = y * 4;
+          r += data[i];
+          g += data[i + 1];
+          b += data[i + 2];
+        }
+        curR = r / n;
+        curG = g / n;
+        curB = b / n;
+        bufR[bufIdx] = curR / 255;
+        bufG[bufIdx] = curG / 255;
+        bufB[bufIdx] = curB / 255;
         bufIdx = (bufIdx + 1) % BUF_SIZE;
-        return;
       }
-      corsBlocked = false;
-      let r = 0, g = 0, b = 0;
-      const n = canvas.height;
-      for (let y = 0; y < n; y++) { const i = y * 4; r += data[i]; g += data[i+1]; b += data[i+2]; }
-      curR = r / n; curG = g / n; curB = b / n;
-      bufR[bufIdx] = curR / 255; bufG[bufIdx] = curG / 255; bufB[bufIdx] = curB / 255;
-      bufIdx = (bufIdx + 1) % BUF_SIZE;
-    }
 
-    // ─── Draw loop ────────────────────────────────────────────────────────────
-    function draw() {
-      requestAnimationFrame(draw);
-      ctx.fillStyle = '#272822';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      if (currentImage) {
-        ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+      // ─── Draw loop ────────────────────────────────────────────────────────────
+      function draw() {
+        requestAnimationFrame(draw);
+        ctx.fillStyle = '#272822';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (currentImage) {
+          ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+        }
+        sampleColumn(); // always sample (uses fallback values if no image / file://)
+        ctx.fillStyle = 'rgba(255,0,0,0.85)';
+        ctx.fillRect(lineX, 0, Math.max(scanSpeed, 2), canvas.height);
+        lineX = (lineX + scanSpeed) % canvas.width;
       }
-      sampleColumn(); // always sample (uses fallback values if no image / file://)
-      ctx.fillStyle = 'rgba(255,0,0,0.85)';
-      ctx.fillRect(lineX, 0, Math.max(scanSpeed, 2), canvas.height);
-      lineX = (lineX + scanSpeed) % canvas.width;
-    }
-    draw();
+      draw();
 
-    // ─── Audio ────────────────────────────────────────────────────────────────
-    // Each sequencer tick fires three sine voices in parallel:
-    //   ping   (red)   — short tone, 800–2800 Hz; pitch and volume track R
-    //   kick   (green) — sine with rapid pitch drop (115→20 Hz); volume tracks G
-    //                    fades toward the right as lairub takes over
-    //   lairub (blue)  — sine with LFO wobble across a 10-octave pentatonic range;
-    //                    grows louder toward the right edge of the image
-    // Scan position (curX 0→1) crossfades kick vs lairub.
-    // Tempo scales with scan speed: BASE_INTERVAL * 2 / scanSpeed.
+      // ─── Audio ────────────────────────────────────────────────────────────────
+      // Each sequencer tick fires three sine voices in parallel:
+      //   ping   (red)   — short tone, 800–2800 Hz; pitch and volume track R
+      //   kick   (green) — sine with rapid pitch drop (115→20 Hz); volume tracks G
+      //                    fades toward the right as lairub takes over
+      //   lairub (blue)  — sine with LFO wobble across a 10-octave pentatonic range;
+      //                    grows louder toward the right edge of the image
+      // Scan position (curX 0→1) crossfades kick vs lairub.
+      // Tempo scales with scan speed: BASE_INTERVAL * 2 / scanSpeed.
 
-    let AC, master, noiseBuf;
-    let seqStep = 0, nextStep = 0, audioReady = false;
+      let AC, master, noiseBuf;
+      let seqStep = 0;
+      let nextStep = 0;
+      let audioReady = false;
 
-    function initAudio() {
-      AC = new (window.AudioContext || window.webkitAudioContext)();
-      // Dynamics compressor prevents clipping when all three voices fire together
-      const comp = AC.createDynamicsCompressor();
-      comp.connect(AC.destination);
-      const gain = AC.createGain(); gain.gain.value = 0.7; gain.connect(comp);
-      master = gain;
-      const len = AC.sampleRate;
-      noiseBuf = AC.createBuffer(1, len, AC.sampleRate);
-      const nd = noiseBuf.getChannelData(0);
-      for (let i = 0; i < len; i++) nd[i] = Math.random() * 2 - 1;
-      nextStep = AC.currentTime; audioReady = true; schedulerLoop();
-    }
-
-    // Look-ahead scheduler: runs every 25 ms, schedules ticks up to 100 ms ahead.
-    // This keeps the Web Audio clock accurate regardless of JS event loop jitter.
-    function schedulerLoop() {
-      while (nextStep < AC.currentTime + 0.1) {
-        tick(nextStep); seqStep = (seqStep + 1) % 4; nextStep += BASE_INTERVAL * 2 / scanSpeed;
+      function initAudio() {
+        AC = new (window.AudioContext || window.webkitAudioContext)();
+        // Dynamics compressor prevents clipping when all three voices fire together
+        const comp = AC.createDynamicsCompressor();
+        comp.connect(AC.destination);
+        const gain = AC.createGain();
+        gain.gain.value = 0.7;
+        gain.connect(comp);
+        master = gain;
+        const len = AC.sampleRate;
+        noiseBuf = AC.createBuffer(1, len, AC.sampleRate);
+        const nd = noiseBuf.getChannelData(0);
+        for (let i = 0; i < len; i++) nd[i] = Math.random() * 2 - 1;
+        nextStep = AC.currentTime;
+        audioReady = true;
+        schedulerLoop();
       }
-      setTimeout(schedulerLoop, 25);
-    }
 
-    function readBuf(buf, offset = 0) { return buf[(bufIdx - 1 - offset + BUF_SIZE) % BUF_SIZE]; }
+      // Look-ahead scheduler: runs every 25 ms, schedules ticks up to 100 ms ahead.
+      // This keeps the Web Audio clock accurate regardless of JS event loop jitter.
+      function schedulerLoop() {
+        while (nextStep < AC.currentTime + 0.1) {
+          tick(nextStep);
+          seqStep = (seqStep + 1) % 4;
+          nextStep += (BASE_INTERVAL * 2) / scanSpeed;
+        }
+        setTimeout(schedulerLoop, 25);
+      }
 
-    // Maps a 0–1 value onto a pentatonic scale across `octaves` octaves.
-    // rootMidi sets the lowest note (e.g. 24 = C1, 48 = C3).
-    function pFreq(v, octaves, rootMidi) {
-      const scale = [0, 2, 4, 7, 9], steps = scale.length * octaves;
-      const i = Math.floor(Math.min(v, 0.9999) * steps);
-      return 440 * Math.pow(2, (rootMidi + Math.floor(i / scale.length) * 12 + scale[i % scale.length] - 69) / 12);
-    }
+      function readBuf(buf, offset = 0) {
+        return buf[(bufIdx - 1 - offset + BUF_SIZE) % BUF_SIZE];
+      }
 
-    // ping — short sine tone driven by the red channel.
-    // R sets both frequency (800–2800 Hz) and volume.
-    function playPing(t, r) {
-      if (r < 0.05) return;
-      const osc = AC.createOscillator(); osc.type = 'sine'; osc.frequency.value = 800 + r * 2000;
-      const g = AC.createGain(); g.gain.setValueAtTime(r * 0.15, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-      osc.connect(g); g.connect(master); osc.start(t); osc.stop(t + 0.18);
-    }
+      // Maps a 0–1 value onto a pentatonic scale across `octaves` octaves.
+      // rootMidi sets the lowest note (e.g. 24 = C1, 48 = C3).
+      function pFreq(v, octaves, rootMidi) {
+        const scale = [0, 2, 4, 7, 9],
+          steps = scale.length * octaves;
+        const i = Math.floor(Math.min(v, 0.9999) * steps);
+        return (
+          440 *
+          Math.pow(
+            2,
+            (rootMidi +
+              Math.floor(i / scale.length) * 12 +
+              scale[i % scale.length] -
+              69) /
+              12
+          )
+        );
+      }
 
-    // kick — sine with a rapid frequency drop, driven by the green channel.
-    // G sets the starting pitch (55–115 Hz) and volume; always drops to 20 Hz.
-    function playKick(t, g) {
-      if (g < 0.08) return;
-      const osc = AC.createOscillator(); osc.type = 'sine';
-      osc.frequency.setValueAtTime(55 + g * 60, t); osc.frequency.exponentialRampToValueAtTime(20, t + 0.22);
-      const gn = AC.createGain(); gn.gain.setValueAtTime(g, t); gn.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-      osc.connect(gn); gn.connect(master); osc.start(t); osc.stop(t + 0.22);
-    }
+      // ping — short sine tone driven by the red channel.
+      // R sets both frequency (800–2800 Hz) and volume.
+      function playPing(t, r) {
+        if (r < 0.05) return;
+        const osc = AC.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = 800 + r * 2000;
+        const g = AC.createGain();
+        g.gain.setValueAtTime(r * 0.15, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc.connect(g);
+        g.connect(master);
+        osc.start(t);
+        osc.stop(t + 0.18);
+      }
 
-    // lairub — sine with LFO pitch wobble, driven by the blue channel.
-    // B maps onto a 10-octave pentatonic range (C1–C11); LFO rate also scales with B.
-    // Named after the "10 oct lfo" cell in the original PurrData patch.
-    function playLairub(t, b) {
-      if (b < 0.04) return;
-      const freq = pFreq(b, 10, 24), dur = 1.2;
-      const osc = AC.createOscillator(); osc.type = 'sine'; osc.frequency.value = freq;
-      const lfo = AC.createOscillator(); lfo.frequency.value = 1.5 + b * 5; // LFO rate: 1.5–6.5 Hz
-      const lfoG = AC.createGain(); lfoG.gain.value = freq * 0.012;          // wobble depth proportional to pitch
-      lfo.connect(lfoG); lfoG.connect(osc.frequency);
-      const g = AC.createGain(); g.gain.setValueAtTime(b * 0.32, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.connect(g); g.connect(master); osc.start(t); osc.stop(t + dur); lfo.start(t); lfo.stop(t + dur);
-    }
+      // kick — sine with a rapid frequency drop, driven by the green channel.
+      // G sets the starting pitch (55–115 Hz) and volume; always drops to 20 Hz.
+      function playKick(t, g) {
+        if (g < 0.08) return;
+        const osc = AC.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(55 + g * 60, t);
+        osc.frequency.exponentialRampToValueAtTime(20, t + 0.22);
+        const gn = AC.createGain();
+        gn.gain.setValueAtTime(g, t);
+        gn.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+        osc.connect(gn);
+        gn.connect(master);
+        osc.start(t);
+        osc.stop(t + 0.22);
+      }
 
-    // On each tick, read the latest buffered RGB values and fire all three voices.
-    // curX (0→1) crossfades the mix: kick dominates on the left, lairub on the right.
-    function tick(t) {
-      const r = readBuf(bufR), g = readBuf(bufG), b = readBuf(bufB);
-      playPing(t, r);
-      playKick(t, g * (1 - curX * 0.6));
-      playLairub(t, b * (0.4 + curX * 0.6));
-    }
+      // lairub — sine with LFO pitch wobble, driven by the blue channel.
+      // B maps onto a 10-octave pentatonic range (C1–C11); LFO rate also scales with B.
+      // Named after the "10 oct lfo" cell in the original PurrData patch.
+      function playLairub(t, b) {
+        if (b < 0.04) return;
+        const freq = pFreq(b, 10, 24),
+          dur = 1.2;
+        const osc = AC.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const lfo = AC.createOscillator();
+        lfo.frequency.value = 1.5 + b * 5; // LFO rate: 1.5–6.5 Hz
+        const lfoG = AC.createGain();
+        lfoG.gain.value = freq * 0.012; // wobble depth proportional to pitch
+        lfo.connect(lfoG);
+        lfoG.connect(osc.frequency);
+        const g = AC.createGain();
+        g.gain.setValueAtTime(b * 0.32, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+        osc.connect(g);
+        g.connect(master);
+        osc.start(t);
+        osc.stop(t + dur);
+        lfo.start(t);
+        lfo.stop(t + dur);
+      }
 
-    // ─── Input ────────────────────────────────────────────────────────────────
-    const gate = document.getElementById('gate');
-    function start() { if (!audioReady) initAudio(); gate.style.display = 'none'; }
-    gate.addEventListener('click', start);
-    document.addEventListener('keydown', e => {
-      if (e.code === 'Space') { e.preventDefault(); if (!audioReady) start(); pickImage(); return; }
-      if (!audioReady) { start(); return; }
-      if (e.code === 'ArrowUp')   scanSpeed = Math.min(scanSpeed + 1, 12);
-      if (e.code === 'ArrowDown') scanSpeed = Math.max(scanSpeed - 1, 1);
-    });
+      // On each tick, read the latest buffered RGB values and fire all three voices.
+      // curX (0→1) crossfades the mix: kick dominates on the left, lairub on the right.
+      function tick(t) {
+        const r = readBuf(bufR),
+          g = readBuf(bufG),
+          b = readBuf(bufB);
+        playPing(t, r);
+        playKick(t, g * (1 - curX * 0.6));
+        playLairub(t, b * (0.4 + curX * 0.6));
+      }
 
-    // ─── Upload & drag-and-drop ───────────────────────────────────────────────
-    function loadFiles(files) {
-      Array.from(files).forEach(file => {
-        if (!file.type.startsWith('image/')) return;
-        const url = URL.createObjectURL(file);
-        const img = new Image();
-        img.onload = () => { loadedImages.push(img); currentImage = img; lineX = 0; };
-        img.src = url;
+      // ─── Input ────────────────────────────────────────────────────────────────
+      const gate = document.getElementById('gate');
+      function start() {
+        if (!audioReady) initAudio();
+        gate.style.display = 'none';
+      }
+      gate.addEventListener('click', start);
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (!audioReady) start();
+          pickImage();
+          return;
+        }
+        if (!audioReady) {
+          start();
+          return;
+        }
+        if (e.code === 'ArrowUp') scanSpeed = Math.min(scanSpeed + 1, 12);
+        if (e.code === 'ArrowDown') scanSpeed = Math.max(scanSpeed - 1, 1);
       });
-    }
 
-    document.getElementById('uploadLabel').addEventListener('click', () => {
-      document.getElementById('fileInput').click();
-    });
-    document.getElementById('fileInput').addEventListener('change', e => loadFiles(e.target.files));
+      // ─── Upload & drag-and-drop ───────────────────────────────────────────────
+      function loadFiles(files) {
+        Array.from(files).forEach((file) => {
+          if (!file.type.startsWith('image/')) return;
+          const url = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => {
+            loadedImages.push(img);
+            currentImage = img;
+            lineX = 0;
+          };
+          img.src = url;
+        });
+      }
 
-    document.addEventListener('dragover', e => e.preventDefault());
-    document.addEventListener('drop', e => {
-      e.preventDefault();
-      if (!audioReady) start();
-      loadFiles(e.dataTransfer.files);
-    });
+      document.getElementById('uploadLabel').addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+      });
+      document
+        .getElementById('fileInput')
+        .addEventListener('change', (e) => loadFiles(e.target.files));
 
-    // ─── Info panel toggle ────────────────────────────────────────────────────
-    const panel = document.getElementById('infoPanel');
-    document.getElementById('infoBtn').addEventListener('click', () => {
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    });
-    document.getElementById('closeBtn').addEventListener('click', () => panel.style.display = 'none');
+      document.addEventListener('dragover', (e) => e.preventDefault());
+      document.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!audioReady) start();
+        loadFiles(e.dataTransfer.files);
+      });
 
-    preload();
-  </script>
+      // ─── Info panel toggle ────────────────────────────────────────────────────
+      const panel = document.getElementById('infoPanel');
+      document.getElementById('infoBtn').addEventListener('click', () => {
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      });
+      document
+        .getElementById('closeBtn')
+        .addEventListener('click', () => (panel.style.display = 'none'));
 
-</body>
+      preload();
+    </script>
+  </body>
 </html>
