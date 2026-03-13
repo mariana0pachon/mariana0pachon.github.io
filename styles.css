@@ -114,14 +114,11 @@ body.project {
 }
 
 .project-content .project-back {
-  margin-bottom: 10px;
-}
-
-.project-back {
   font-size: 11px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
+  margin-bottom: 10px;
 }
 
 .project-content h1 {
