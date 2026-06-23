@@ -7,7 +7,22 @@
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body class="project">
-    <div class="project-image"></div>
+    <div class="project-image has-slideshow" id="slideshow">
+      <div class="slideshow-slide active">
+        <video muted playsinline>
+          <source src="../assets/experiments/noise_boxes/01.MOV" type="video/mp4" />
+        </video>
+      </div>
+      <div
+        class="slideshow-slide"
+        style="background-image: url('../assets/experiments/noise_boxes/02.PNG');"
+      ></div>
+      <div class="slideshow-slide">
+        <video muted playsinline>
+          <source src="../assets/experiments/noise_boxes/03.MOV" type="video/mp4" />
+        </video>
+      </div>
+    </div>
 
     <div class="project-content">
       <a class="project-back" href="../index.html">← back</a>
@@ -16,5 +31,82 @@
         A sound experimentation with metal, motors, and piezoelectric sensors.
       </p>
     </div>
+
+    <script>
+      const slides = document.querySelectorAll('.slideshow-slide');
+      let current = 0;
+      let timer = null;
+
+      slides.forEach((slide) => {
+        const video = slide.querySelector('video');
+        if (!video) return;
+        video.addEventListener('loadedmetadata', () => {
+          if (video.videoHeight > video.videoWidth) {
+            video.style.objectFit = 'contain';
+          }
+        });
+      });
+
+      slides.forEach((slide) => {
+        const bg = slide.style.backgroundImage;
+        if (!bg) return;
+        const match = bg.match(/url\(['"]?([^'"]+)['"]?\)/);
+        if (!match) return;
+        const img = new Image();
+        img.onload = () => {
+          if (img.naturalHeight > img.naturalWidth) {
+            slide.style.backgroundSize = 'contain';
+            slide.style.backgroundRepeat = 'no-repeat';
+          }
+        };
+        img.src = match[1];
+      });
+
+      function goToSlide(index) {
+        clearTimeout(timer);
+
+        const prevSlide = slides[current];
+        const prevVideo = prevSlide.querySelector('video');
+        if (prevVideo) {
+          prevVideo.pause();
+          prevVideo.currentTime = 0;
+        }
+        prevSlide.classList.remove('active');
+
+        current = index % slides.length;
+        const slide = slides[current];
+        slide.classList.add('active');
+
+        const video = slide.querySelector('video');
+        if (video) {
+          video.addEventListener('ended', () => goToSlide(current + 1), { once: true });
+          video.addEventListener('error', () => goToSlide(current + 1), { once: true });
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              video.muted = true;
+              video.play();
+            });
+          }
+        } else {
+          timer = setTimeout(() => goToSlide(current + 1), 3000);
+        }
+      }
+
+      const firstVideo = slides[0].querySelector('video');
+      if (firstVideo) {
+        firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
+        firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
+        const playPromise = firstVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            firstVideo.muted = true;
+            firstVideo.play();
+          });
+        }
+      } else {
+        timer = setTimeout(() => goToSlide(1), 3000);
+      }
+    </script>
   </body>
 </html>

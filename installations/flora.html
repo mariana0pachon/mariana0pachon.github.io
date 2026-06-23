@@ -51,7 +51,7 @@
     <div class="project-content">
       <a class="project-back" href="../index.html">← back</a>
       <h1>Flora</h1>
-      <h5>
+      <p>
         Winner of the
         <a
           href="https://2025.amaze-berlin.de/award-winners/"
@@ -65,7 +65,7 @@
           rel="noopener noreferrer"
           >Arduino Blog</a
         >.
-      </h5>
+      </p>
 
       <p>
         <a href="https://www.youtube.com/watch?v=s-QiC-kuT5c&t=3s" target="_blank" rel="noopener noreferrer">Presentation video</a> ·
@@ -152,6 +152,7 @@
         const video = slide.querySelector('video');
         if (video) {
           video.addEventListener('ended', () => goToSlide(current + 1), { once: true });
+          video.addEventListener('error', () => goToSlide(current + 1), { once: true });
           const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
@@ -168,6 +169,7 @@
       const firstVideo = slides[0].querySelector('video');
       if (firstVideo) {
         firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
+        firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
         const playPromise = firstVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {
