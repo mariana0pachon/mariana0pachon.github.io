@@ -28,6 +28,12 @@
           <source src="../assets/experiments/circuit_bending/04.MOV" type="video/mp4" />
         </video>
       </div>
+      <button class="mute-toggle" id="muteToggle" aria-label="Toggle sound">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      </button>
     </div>
 
     <div class="project-content">
@@ -42,6 +48,17 @@
       const slides = document.querySelectorAll('.slideshow-slide');
       let current = 0;
       let timer = null;
+      let isMuted = true;
+
+      const muteBtn = document.getElementById('muteToggle');
+      const iconMuted = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
+      const iconUnmuted = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+
+      muteBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        muteBtn.innerHTML = isMuted ? iconMuted : iconUnmuted;
+        document.querySelectorAll('.slideshow-slide video').forEach(v => { v.muted = isMuted; });
+      });
 
       slides.forEach((slide) => {
         const video = slide.querySelector('video');
@@ -85,12 +102,15 @@
 
         const video = slide.querySelector('video');
         if (video) {
+          video.muted = isMuted;
           video.addEventListener('ended', () => goToSlide(current + 1), { once: true });
           video.addEventListener('error', () => goToSlide(current + 1), { once: true });
           const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
               video.muted = true;
+              isMuted = true;
+              muteBtn.innerHTML = iconMuted;
               video.play();
             });
           }
@@ -101,12 +121,15 @@
 
       const firstVideo = slides[0].querySelector('video');
       if (firstVideo) {
+        firstVideo.muted = isMuted;
         firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
         firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
         const playPromise = firstVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {
             firstVideo.muted = true;
+            isMuted = true;
+            muteBtn.innerHTML = iconMuted;
             firstVideo.play();
           });
         }

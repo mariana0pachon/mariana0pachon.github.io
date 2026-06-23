@@ -117,6 +117,31 @@ body.project {
   object-position: center;
 }
 
+.mute-toggle {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 10;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--fg);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  padding: 8px;
+  line-height: 0;
+}
+
+.mute-toggle:hover {
+  opacity: 1;
+}
+
+.mute-toggle svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
 .project-content {
   height: 100vh;
   overflow-y: auto;
