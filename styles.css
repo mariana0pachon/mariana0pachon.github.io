@@ -171,3 +171,34 @@ body.project {
   color: #ccc;
   max-width: 280px;
 }
+
+/* ── Page loader ──────────────────────────────────── */
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s ease;
+}
+
+.page-loader.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-loader-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  animation: loader-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes loader-pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}

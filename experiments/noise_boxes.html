@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body class="project">
+    <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
     <div class="project-image has-slideshow" id="slideshow">
       <div class="slideshow-slide active">
         <video muted playsinline>
@@ -43,6 +44,27 @@
       let current = 0;
       let timer = null;
       let isMuted = true;
+
+      const loader = document.getElementById('pageLoader');
+      let loaderHidden = false;
+      const loaderFallback = setTimeout(() => hideLoader(), 5000);
+
+      function hideLoader() {
+        if (loaderHidden) return;
+        loaderHidden = true;
+        clearTimeout(loaderFallback);
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 600);
+      }
+
+      function preloadNext(idx) {
+        const nextVideo = slides[(idx + 1) % slides.length].querySelector('video');
+        if (nextVideo && !nextVideo.dataset.preloaded) {
+          nextVideo.preload = 'auto';
+          nextVideo.load();
+          nextVideo.dataset.preloaded = 'true';
+        }
+      }
 
       const muteBtn = document.getElementById('muteToggle');
       const iconMuted = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
@@ -108,16 +130,22 @@
               video.play();
             });
           }
+          preloadNext(current);
         } else {
+          preloadNext(current);
           timer = setTimeout(() => goToSlide(current + 1), 3000);
         }
       }
 
       const firstVideo = slides[0].querySelector('video');
       if (firstVideo) {
+        firstVideo.preload = 'auto';
         firstVideo.muted = isMuted;
+        firstVideo.addEventListener('canplay', hideLoader, { once: true });
+        firstVideo.addEventListener('error', hideLoader, { once: true });
         firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
         firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
+        firstVideo.load();
         const playPromise = firstVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {
@@ -127,7 +155,9 @@
             firstVideo.play();
           });
         }
+        preloadNext(0);
       } else {
+        hideLoader();
         timer = setTimeout(() => goToSlide(1), 3000);
       }
     </script>

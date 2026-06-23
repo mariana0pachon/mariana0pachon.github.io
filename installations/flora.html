@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body class="project">
+    <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
     <div class="project-image has-slideshow" id="slideshow">
       <div class="slideshow-slide active">
         <video muted playsinline>
@@ -107,7 +108,27 @@
       let current = 0;
       let timer = null;
 
-      // Detect portrait videos: use contain instead of cover
+      const loader = document.getElementById('pageLoader');
+      let loaderHidden = false;
+      const loaderFallback = setTimeout(() => hideLoader(), 5000);
+
+      function hideLoader() {
+        if (loaderHidden) return;
+        loaderHidden = true;
+        clearTimeout(loaderFallback);
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 600);
+      }
+
+      function preloadNext(idx) {
+        const nextVideo = slides[(idx + 1) % slides.length].querySelector('video');
+        if (nextVideo && !nextVideo.dataset.preloaded) {
+          nextVideo.preload = 'auto';
+          nextVideo.load();
+          nextVideo.dataset.preloaded = 'true';
+        }
+      }
+
       slides.forEach((slide) => {
         const video = slide.querySelector('video');
         if (!video) return;
@@ -118,7 +139,6 @@
         });
       });
 
-      // Detect portrait images: use contain + no-repeat so they don't tile
       slides.forEach((slide) => {
         const bg = slide.style.backgroundImage;
         if (!bg) return;
@@ -160,16 +180,21 @@
               video.play();
             });
           }
+          preloadNext(current);
         } else {
+          preloadNext(current);
           timer = setTimeout(() => goToSlide(current + 1), 3000);
         }
       }
 
-      // Start: first slide is already active, check if it's a video
       const firstVideo = slides[0].querySelector('video');
       if (firstVideo) {
+        firstVideo.preload = 'auto';
+        firstVideo.addEventListener('canplay', hideLoader, { once: true });
+        firstVideo.addEventListener('error', hideLoader, { once: true });
         firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
         firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
+        firstVideo.load();
         const playPromise = firstVideo.play();
         if (playPromise !== undefined) {
           playPromise.catch(() => {
@@ -177,7 +202,9 @@
             firstVideo.play();
           });
         }
+        preloadNext(0);
       } else {
+        hideLoader();
         timer = setTimeout(() => goToSlide(1), 3000);
       }
     </script>
