@@ -8,14 +8,31 @@
     <style>
       body {
         margin: 0;
+        background: #fff;
+        color: #111;
         display: flex;
         flex-direction: column;
         height: 100dvh;
       }
 
-      .dossier-nav {
-        padding: 1rem 1.5rem;
+      .pdf-nav {
+        padding: 24px 60px;
         flex-shrink: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .pdf-nav .project-back {
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #bbb;
+        text-decoration: none;
+      }
+
+      .pdf-nav .project-back:hover {
+        color: #111;
+        text-decoration: none;
       }
 
       .dossier-embed {
@@ -27,7 +44,7 @@
     </style>
   </head>
   <body>
-    <nav class="dossier-nav">
+    <nav class="pdf-nav">
       <a class="project-back" href="../index.html">← back</a>
     </nav>
     <iframe

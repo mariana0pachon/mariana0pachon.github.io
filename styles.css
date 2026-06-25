@@ -12,7 +12,10 @@
   --muted: #75715e;
 }
 
-html,
+html {
+  background-color: #fff;
+}
+
 body {
   background-color: var(--bg);
   color: var(--fg);
@@ -36,54 +39,196 @@ a:hover {
 /* ── Index ────────────────────────────────────────── */
 
 body.index {
-  /*background-image: url('./assets/bg/2.jpg');
-  background-size: cover;
-  background-position: center;*/
+  background-color: #fff;
+  color: #111;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-body.index main {
-  padding: 80px 60px;
-  max-width: 480px;
+body.index a {
+  color: #111;
 }
 
-body.index section {
-  margin-bottom: 56px;
+body.index .page-loader {
+  background: #fff;
 }
 
-body.index h1 {
+body.index .page-loader-dot {
+  background: #999;
+}
+
+.eyebrow {
   font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
+  font-weight: 500;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+/* Header */
+
+.site-header {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  padding: 24px 60px 16px;
+}
+
+.site-header__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #111;
+  padding-top: 3px;
+}
+
+.site-header__tagline {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #111;
+  max-width: 520px;
   margin-bottom: 16px;
 }
 
-.header {
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 30px 0px 0px 60px;
+.site-header__featured {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-body.index h3 {
-  font-size: 22px;
+.site-header__featured .eyebrow {
+  margin-bottom: 4px;
+}
+
+.site-header__featured a {
+  font-size: 12px;
+  color: #bbb;
+  text-decoration: none;
+  line-height: 1.75;
+}
+
+.site-header__featured a:hover {
+  color: #111;
+  text-decoration: none;
+}
+
+/* Main / Work list */
+
+.site-main {
+  position: relative;
+  padding: 16px 60px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.work-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 6px;
+}
+
+.work-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.work-group__label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 1px;
+  transition: color 0.12s ease;
+}
+
+.work-group__items {
+  display: flex;
+  flex-direction: column;
+}
+
+.work-item {
+  font-size: clamp(16px, min(3.4vw, 5.5vh), 48px);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.1;
+  color: #d4d4d4;
+  text-decoration: none;
+  transition: color 0.12s ease;
+  width: fit-content;
+}
+
+.work-list:has(.work-item:hover) .work-item {
+  color: #e8e8e8;
+}
+
+.work-list:has(.work-item:hover) .work-group__label {
+  color: #ddd;
+}
+
+.work-group:has(.work-item:hover) .work-group__label {
+  color: #999;
+}
+
+.work-item:hover {
+  color: #111 !important;
+  text-decoration: none;
+  position: relative;
+  z-index: 300;
+}
+
+/* Footer */
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 60px;
+  font-size: 12px;
+  color: #999;
+}
+
+.site-footer a {
+  color: #999;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: #111;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
 }
 
 /* ── Project page ─────────────────────────────────── */
 
 body.project {
+  background-color: #fff;
+  color: #111;
   display: grid;
   grid-template-columns: 1fr 360px;
   min-height: 100vh;
 }
 
+body.project a {
+  color: #111;
+}
+
+body.project .page-loader {
+  background: #fff;
+}
+
+body.project .page-loader-dot {
+  background: #999;
+}
+
 .project-image {
-  background-color: #1e1f1a;
+  background-color: #fff;
   min-height: 100vh;
   position: sticky;
   top: 0;
@@ -145,30 +290,45 @@ body.project {
 .project-content {
   height: 100vh;
   overflow-y: auto;
-  padding: 80px 48px;
+  padding: 48px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .project-content .project-back {
   font-size: 11px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: #bbb;
+  text-decoration: none;
   margin-bottom: 10px;
+}
+
+.project-content .project-back:hover {
+  color: #111;
+  text-decoration: none;
 }
 
 .project-content h1 {
   font-size: 28px;
   font-weight: 400;
   line-height: 1.3;
+  color: #111;
+}
+
+.project-content h5 {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: #999;
+  line-height: 1.6;
 }
 
 .project-content p {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.8;
-  color: #ccc;
+  color: #555;
   max-width: 280px;
 }
 
@@ -201,4 +361,93 @@ body.project {
 @keyframes loader-pulse {
   0%, 100% { opacity: 0.2; transform: scale(0.8); }
   50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* ── Work preview ─────────────────────────────────── */
+
+.work-preview {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.work-preview.visible {
+  opacity: 1;
+}
+
+.work-preview__media {
+  display: none;
+  width: auto;
+  height: auto;
+  max-width: 50vw;
+  max-height: 65vh;
+}
+
+.work-preview__media.active {
+  display: block;
+}
+
+/* ── Decorative placeholder ───────────────────────── */
+
+.decorative-placeholder {
+  position: absolute;
+  bottom: 32px;
+  right: 48px;
+  width: 26vw;
+  max-width: 340px;
+  cursor: default;
+}
+
+.decorative-placeholder svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: spin 12s linear infinite;
+  animation-play-state: paused;
+  opacity: 0.25;
+  transition: opacity 0.3s ease;
+}
+
+.decorative-placeholder:hover svg {
+  animation-play-state: running;
+  opacity: 0.7;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Responsive ───────────────────────────────────── */
+
+@media (max-width: 900px) {
+  body.index {
+    height: auto;
+    overflow: auto;
+  }
+
+  .site-header {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 24px 32px 16px;
+  }
+
+  .site-main {
+    padding: 16px 32px 0;
+  }
+
+  .work-item {
+    font-size: clamp(24px, 7vw, 48px);
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px 32px;
+  }
 }

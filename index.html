@@ -8,34 +8,114 @@
   </head>
   <body class="index">
     <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
-    <p class="header">mariana pachón puentes</p>
-    <p></p>
-    <main>
-      <section>
-        <h1>installations</h1>
-        <h3><a href="installations/flora.html">flora</a></h3>
-        <h3><a href="installations/wear_the_sound.html">wear the sound</a></h3>
-      </section>
 
-      <section>
-        <h1>digital playground</h1>
-        <h3><a href="playground/corrientes.html">corrientes</a></h3>
-        <h3><a href="playground/caleidoscopio.html">caleidoscopio</a></h3>
-      </section>
+    <header class="site-header">
+      <div class="site-header__name">mariana pachón puentes</div>
+      <div class="site-header__info">
+        <p class="site-header__tagline">
+          Creative programmer and inventor of playful electronic objects.
+    </br>
+    </br>
+    My practice is centered around experimentation and rapid prototyping.
+    <br>
+    <br>
+    I like to give space to the artisanal and slow work tied to creating electronic circuits, breaking things open, repairing and/or modifying machines. 
+        </p>
+      </div>
+    </header>
 
-      <section>
-        <h1>experiments & prototypes</h1>
-        <h3><a href="experiments/burbufonos.html">burbúfonos</a></h3>
-        <h3><a href="experiments/circuit_bending.html">circuit bending</a></h3>
-        <h3><a href="experiments/noise_boxes.html">noise boxes</a></h3>
-        <h3><a href="experiments/shrinking_theatre.html">shrinking theatre</a></h3>
-      </section>
+    <main class="site-main">
+      <nav class="work-list">
+        <div class="work-group">
+          <span class="work-group__label">installations</span>
+          <div class="work-group__items">
+            <a class="work-item" href="installations/flora.html"
+               data-preview="assets/installations/flora/1.mov" data-preview-type="video">flora</a>
+            <a class="work-item" href="installations/wear_the_sound.html"
+               data-preview="assets/installations/wear_the_sound/1.png" data-preview-type="image">wear the sound</a>
+          </div>
+        </div>
+        <div class="work-group">
+          <span class="work-group__label">digital playground</span>
+          <div class="work-group__items">
+            <a class="work-item" href="playground/corrientes.html"
+               data-preview="assets/playground/corrientes/1.jpeg" data-preview-type="image">corrientes</a>
+            <a class="work-item" href="playground/caleidoscopio.html">caleidoscopio</a>
+          </div>
+        </div>
+        <div class="work-group">
+          <span class="work-group__label">experiments</span>
+          <div class="work-group__items">
+            <a class="work-item" href="experiments/burbufonos.html"
+               data-preview="assets/experiments/burbufonos/02.MOV" data-preview-type="video">burbúfonos</a>
+            <a class="work-item" href="experiments/circuit_bending.html"
+               data-preview="assets/experiments/circuit_bending/01.MOV" data-preview-type="video">circuit bending</a>
+            <a class="work-item" href="experiments/noise_boxes.html"
+               data-preview="assets/experiments/noise_boxes/01.MOV" data-preview-type="video">noise boxes</a>
+            <a class="work-item" href="experiments/shrinking_theatre.html"
+               data-preview="assets/experiments/shrinking_theatre/01.mov" data-preview-type="video">shrinking theatre</a>
+          </div>
+        </div>
+        <div class="work-group">
+          <span class="work-group__label">publications</span>
+          <div class="work-group__items">
+            <a class="work-item" href="publications/memorias_desbloqueadas_en_el_tropico.html">memorias desbloqueadas en el trópico</a>
+          </div>
+        </div>
+      </nav>
 
-      <section>
-        <h1>publications</h1>
-        <h3><a href="publications/memorias_desbloqueadas_en_el_tropico.html">memorias desbloqueadas en el trópico</a></h3>
-      </section>
     </main>
+
+    <div class="work-preview" id="workPreview" aria-hidden="true">
+      <img class="work-preview__media" id="previewImg" src="" alt="">
+      <video class="work-preview__media" id="previewVideo" muted playsinline loop></video>
+    </div>
+
+    <footer class="site-footer">
+      <p>© 2025. mariana pachón puentes. <a href="cv.html">CV</a></p>
+      <nav class="footer-links">
+        <a href="mailto:mariana0pachon@gmail.com" target="_blank">Email</a>
+        <a href="https://www.instagram.com/mariana0pachon/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/in/marianapachon/" target="_blank">LinkedIn</a>
+      </nav>
+    </footer>
+
+    <script>
+      // Work item hover preview
+      const preview = document.getElementById('workPreview');
+      const previewImg = document.getElementById('previewImg');
+      const previewVideo = document.getElementById('previewVideo');
+
+      document.querySelectorAll('.work-item[data-preview]').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          const src  = item.dataset.preview;
+          const type = item.dataset.previewType || 'image';
+          if (type === 'video') {
+            previewImg.classList.remove('active');
+            previewVideo.src = src;
+            previewVideo.currentTime = 0;
+            previewVideo.play().catch(() => {});
+            previewVideo.classList.add('active');
+          } else {
+            previewVideo.classList.remove('active');
+            previewVideo.pause();
+            previewVideo.src = '';
+            previewImg.src = src;
+            previewImg.classList.add('active');
+          }
+          preview.classList.add('visible');
+        });
+
+        item.addEventListener('mouseleave', () => {
+          preview.classList.remove('visible');
+          previewVideo.classList.remove('active');
+          previewImg.classList.remove('active');
+          previewVideo.pause();
+          previewVideo.src = '';
+        });
+      });
+    </script>
+
     <script>
       const loader = document.getElementById('pageLoader');
       let hidden = false;
