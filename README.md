@@ -6,3 +6,9 @@
 - experiment with new design
 - make content loop and automatically go to next if 01.mov isn't there for example burbufonos
 - 
+
+# referentes de diseño
+https://marianorrisesparza.com/projects
+https://willvint.com/3/
+https://tammeva.com/
+https://edelinego.com/

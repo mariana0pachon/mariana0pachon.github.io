@@ -45,9 +45,10 @@ canvas {
   display: inline-flex;
   align-items: center;
   background: rgba(39, 40, 34, 0.72);
-  padding: 6px 10px;
+  padding: 6px 12px;
   font-size: 11px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   line-height: 1;
 }
 .project-back,
