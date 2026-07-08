@@ -46,7 +46,7 @@ canvas {
   align-items: center;
   background: rgba(39, 40, 34, 0.72);
   padding: 6px 12px;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   line-height: 1;
@@ -83,12 +83,14 @@ canvas {
   margin-bottom: 0;
 }
 .ui h1 {
+  font-family: 'Mariana', serif;
   font-size: 24px;
-  font-weight: 400;
+  font-weight: normal;
+  text-transform: uppercase;
   margin-bottom: 10px;
 }
 .ui p {
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.55);
   margin-bottom: 6px;

@@ -7,20 +7,18 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="index">
+    <div class="bg"></div>
+    <canvas id="brush"></canvas>
     <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
 
     <header class="site-header">
       <div class="site-header__name">mariana pachón puentes</div>
       <div class="site-header__info">
-        <p class="site-header__tagline">
-          Creative programmer and inventor of playful electronic objects.
-    </br>
-    </br>
-    My practice is centered around experimentation and rapid prototyping.
-    <br>
-    <br>
-    I like to give space to the artisanal and slow work tied to creating electronic circuits, breaking things open, repairing and/or modifying machines.
-        </p>
+        <div class="site-header__tagline">
+          <p>Creative programmer and inventor of playful electronic objects.</p>
+          <p>My practice is centered around experimentation and rapid prototyping.</p>
+          <p>I like to give space to the artisanal and slow work tied to creating electronic circuits, breaking things open, repairing and/or modifying machines.</p>
+        </div>
       </div>
     </header>
 
@@ -73,7 +71,7 @@
     </div>
 
     <footer class="site-footer">
-      <p>© 2025. mariana pachón puentes. <a href="cv.html">CV</a></p>
+      <p>© 2026. mariana pachon puentes. <a href="cv.html">CV</a></p>
       <nav class="footer-links">
         <a href="mailto:mariana0pachon@gmail.com" target="_blank">Email</a>
         <a href="https://www.instagram.com/mariana0pachon/" target="_blank">Instagram</a>
@@ -165,6 +163,125 @@
           previewVideo.src = '';
         });
       });
+    </script>
+
+    <script>
+    (function () {
+      'use strict';
+
+      var BRUSH_SRC   = 'assets/bg/brush.png';
+      var COLOR       = '#F4D03F';
+      var SIZE        = 200;   // large stamps for broad coverage
+      var SIZE_JITTER = 0.15;
+      var SPACING     = 0.6;   // stamps overlap slightly for a smoother trail
+      var OPACITY     = 0.5;
+      var LAG         = 0.035; // how loosely the brush follows the mouse (lower = more drift)
+
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var canvas = document.getElementById('brush');
+      var ctx = canvas.getContext('2d');
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+      function resize() {
+        canvas.width  = Math.floor(window.innerWidth  * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+      }
+      resize();
+      var rT;
+      window.addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(resize, 150); });
+
+      var stamp = null;
+      var img = new Image();
+      img.onload = function () {
+        var c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        var x = c.getContext('2d');
+        x.drawImage(img, 0, 0);
+        x.globalCompositeOperation = 'source-in';
+        x.fillStyle = COLOR;
+        x.fillRect(0, 0, c.width, c.height);
+        stamp = c;
+      };
+      img.src = BRUSH_SRC;
+
+      function drawStamp(x, y, angle) {
+        if (!stamp) return;
+        var jitter = 1 + (Math.random() * 2 - 1) * SIZE_JITTER;
+        var size = SIZE * jitter * dpr;
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = OPACITY;
+        ctx.setTransform(1, 0, 0, 1, x * dpr, y * dpr);
+        ctx.rotate(angle);
+        ctx.drawImage(stamp, -size / 2, -size / 2, size, size);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      // The agent is a brush point that slowly drifts toward the mouse.
+      // This creates sweeping curves across the screen rather than an exact cursor trail.
+      var mouseX = null, mouseY = null;
+      var agentX = 0, agentY = 0;
+      var prevX = 0, prevY = 0;
+      var carry = 0;
+      var running = false;
+      var initialized = false;
+
+      window.addEventListener('pointermove', function (e) {
+        if (!initialized) {
+          agentX = prevX = e.clientX;
+          agentY = prevY = e.clientY;
+          initialized = true;
+        }
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!running) { running = true; requestAnimationFrame(frame); }
+      }, { passive: true });
+
+      document.addEventListener('pointerleave', function () {
+        mouseX = null;
+        mouseY = null;
+      });
+
+      function frame() {
+        if (mouseX === null) {
+          running = false;
+          return;
+        }
+
+        var toX = mouseX - agentX;
+        var toY = mouseY - agentY;
+        var distToMouse = Math.sqrt(toX * toX + toY * toY);
+
+        if (distToMouse < 0.5) {
+          running = false;
+          return;
+        }
+
+        // Spring: agent moves a fraction of remaining distance each frame
+        agentX += toX * LAG;
+        agentY += toY * LAG;
+
+        var dx = agentX - prevX;
+        var dy = agentY - prevY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var angle = Math.atan2(dy, dx);
+        var step = SIZE * SPACING;
+
+        // Accumulate distance; subtract a step each time we place a stamp
+        carry += dist;
+        while (carry >= step) {
+          carry -= step;
+          drawStamp(agentX, agentY, angle);
+        }
+
+        prevX = agentX;
+        prevY = agentY;
+
+        requestAnimationFrame(frame);
+      }
+    })();
     </script>
 
     <script>

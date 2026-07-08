@@ -12,3 +12,6 @@ https://marianorrisesparza.com/projects
 https://willvint.com/3/
 https://tammeva.com/
 https://edelinego.com/
+
+# ideas
+un video de un dibujo hecho con crayolas que se va dibujando cuando uno mueve el mouse
