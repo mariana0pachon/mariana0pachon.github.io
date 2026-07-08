@@ -31,11 +31,11 @@
 }
 
 html {
-  background-color: #111;
+  background-color: #fff;
 }
 
 body {
-  background-color: var(--bg);
+  background-color: #fff;
   color: var(--fg);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -483,8 +483,9 @@ body.project .page-loader-dot {
 }
 
 .media-grid {
-  columns: 2;
-  column-gap: 4px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
   padding: 0 4px 4px;
 }
 
@@ -516,9 +517,7 @@ body.project .page-loader-dot {
 }
 
 .media-item {
-  break-inside: avoid;
-  margin-bottom: 4px;
-  background: #f4f4f4;
+  background: #fff;
   line-height: 0;
 }
 
