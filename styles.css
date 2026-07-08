@@ -31,11 +31,12 @@
 }
 
 html {
-  background-color: #fff;
+  background-color: #ffffff;
+  color-scheme: light;
 }
 
 body {
-  background-color: #fff;
+  background-color: #ffffff;
   color: var(--fg);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -241,23 +242,25 @@ body.index .site-footer a:hover {
   width: fit-content;
 }
 
-.work-list:has(.work-item:hover) .work-item {
-  color: #e8e8e8;
-}
+@media (hover: hover) and (pointer: fine) {
+  .work-list:has(.work-item:hover) .work-item {
+    color: #e8e8e8;
+  }
 
-.work-list:has(.work-item:hover) .work-group__label {
-  color: #ddd;
-}
+  .work-list:has(.work-item:hover) .work-group__label {
+    color: #ddd;
+  }
 
-.work-group:has(.work-item:hover) .work-group__label {
-  color: #999;
-}
+  .work-group:has(.work-item:hover) .work-group__label {
+    color: #999;
+  }
 
-.work-item:hover {
-  color: #fff !important;
-  text-decoration: none;
-  position: relative;
-  z-index: 300;
+  .work-item:hover {
+    color: #fff !important;
+    text-decoration: none;
+    position: relative;
+    z-index: 300;
+  }
 }
 
 /* Footer */
@@ -519,6 +522,19 @@ body.project .page-loader-dot {
 .media-item {
   background: #fff;
   line-height: 0;
+}
+
+.media-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 0 4px 4px;
+}
+
+.media-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .media-item img,
