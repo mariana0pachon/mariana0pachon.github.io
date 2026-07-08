@@ -116,15 +116,15 @@ body.index .site-header__tagline {
 }
 
 body.index .site-footer {
-  color: #666;
+  color: #f5f0eb;
 }
 
 body.index .site-footer a {
-  color: #666;
+  color: #f5f0eb;
 }
 
 body.index .site-footer a:hover {
-  color: #f5f0eb;
+  color: #fff;
 }
 
 .eyebrow {
@@ -226,6 +226,7 @@ body.index .site-footer a:hover {
 .work-group__items {
   display: flex;
   flex-direction: column;
+  gap: clamp(2px, 0.6vh, 8px);
 }
 
 .work-item {
@@ -263,10 +264,10 @@ body.index .site-footer a:hover {
 
 .site-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: clamp(6px, 1vh, 12px) 60px;
-  font-size: clamp(12px, 1.5vh, 17px);
+  font-size: clamp(14px, 1.8vh, 20px);
   color: #999;
 }
 
@@ -416,7 +417,9 @@ body.project .page-loader-dot {
 
 .project-header {
   padding: 48px 60px 48px;
-  max-width: 860px;
+  max-width: 50vw;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .project-header .project-back {
@@ -463,10 +466,53 @@ body.project .page-loader-dot {
   margin-bottom: 0;
 }
 
+.project-text {
+  padding: 40px 60px;
+  max-width: 50vw;
+}
+
+.project-text p {
+  font-size: 20px;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.project-text p:last-child {
+  margin-bottom: 0;
+}
+
 .media-grid {
   columns: 2;
   column-gap: 4px;
   padding: 0 4px 4px;
+}
+
+.media-grid--tall-left {
+  columns: unset;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  padding: 0 4px 4px;
+  max-height: 100vh;
+}
+
+.media-grid--tall-left .media-item:first-child {
+  grid-row: span 2;
+}
+
+.media-grid--tall-left .media-item {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.media-grid--tall-left .media-item img,
+.media-grid--tall-left .media-item video {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
 }
 
 .media-item {
@@ -480,6 +526,8 @@ body.project .page-loader-dot {
 .media-item video {
   width: 100%;
   height: auto;
+  max-height: 100vh;
+  object-fit: cover;
   display: block;
 }
 
@@ -598,6 +646,20 @@ body.project .page-loader-dot {
 
   .site-main {
     padding: 16px 32px 0;
+  }
+
+  .site-header__tagline {
+    font-size: 16px;
+  }
+
+  .project-header {
+    padding: 24px 24px 32px;
+    max-width: 100%;
+  }
+
+  .project-text {
+    padding: 24px 24px;
+    max-width: 100%;
   }
 
   .work-item {

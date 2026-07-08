@@ -15,3 +15,10 @@ https://edelinego.com/
 
 # ideas
 un video de un dibujo hecho con crayolas que se va dibujando cuando uno mueve el mouse
+https://loonamessal-art.com/
+
+# for water effect
+- hacer una capa en procreate con el pincel
+- export png
+- ponerlo hidden encima de la otra imagen
+- cuando se mueve el mouse se va revealing un camino para que se vea eso
