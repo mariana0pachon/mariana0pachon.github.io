@@ -8,164 +8,43 @@
   </head>
   <body class="project">
     <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
-    <div class="project-image has-slideshow" id="slideshow">
-      <div class="slideshow-slide active">
-        <video muted playsinline>
+
+    <div class="project-header">
+      <a class="project-back" href="../index.html">← back</a>
+      <h1>circuit bending</h1>
+      <p>An investigative experimentation with opening toys and modifying the connections between resistances to generate new sound.</p>
+    </div>
+
+    <div class="media-grid">
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/circuit_bending/01.MOV" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/circuit_bending/02.MOV" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/circuit_bending/03.MOV" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/circuit_bending/04.MOV" type="video/mp4" />
         </video>
       </div>
-      <button class="mute-toggle" id="muteToggle" aria-label="Toggle sound">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-          <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="project-content">
-      <a class="project-back" href="../index.html">← back</a>
-      <h1>circuit bending</h1>
-      <p>
-        An investigative experimentation with opening toys and modifying the connections between resistances to generate new sound.
-      </p>
     </div>
 
     <script>
-      const slides = document.querySelectorAll('.slideshow-slide');
-      let current = 0;
-      let timer = null;
-      let isMuted = true;
-
       const loader = document.getElementById('pageLoader');
-      let loaderHidden = false;
-      const loaderFallback = setTimeout(() => hideLoader(), 5000);
-
-      function hideLoader() {
-        if (loaderHidden) return;
-        loaderHidden = true;
-        clearTimeout(loaderFallback);
+      window.addEventListener('load', () => {
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
-      }
-
-      function preloadNext(idx) {
-        const nextVideo = slides[(idx + 1) % slides.length].querySelector('video');
-        if (nextVideo && !nextVideo.dataset.preloaded) {
-          nextVideo.preload = 'auto';
-          nextVideo.load();
-          nextVideo.dataset.preloaded = 'true';
-        }
-      }
-
-      const muteBtn = document.getElementById('muteToggle');
-      const iconMuted = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
-      const iconUnmuted = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
-
-      muteBtn.addEventListener('click', () => {
-        isMuted = !isMuted;
-        muteBtn.innerHTML = isMuted ? iconMuted : iconUnmuted;
-        document.querySelectorAll('.slideshow-slide video').forEach(v => { v.muted = isMuted; });
       });
-
-      slides.forEach((slide) => {
-        const video = slide.querySelector('video');
-        if (!video) return;
-        video.addEventListener('loadedmetadata', () => {
-          if (video.videoHeight > video.videoWidth) {
-            video.style.objectFit = 'contain';
-          }
-        });
-      });
-
-      slides.forEach((slide) => {
-        const bg = slide.style.backgroundImage;
-        if (!bg) return;
-        const match = bg.match(/url\(['"]?([^'"]+)['"]?\)/);
-        if (!match) return;
-        const img = new Image();
-        img.onload = () => {
-          if (img.naturalHeight > img.naturalWidth) {
-            slide.style.backgroundSize = 'contain';
-            slide.style.backgroundRepeat = 'no-repeat';
-          }
-        };
-        img.src = match[1];
-      });
-
-      function goToSlide(index) {
-        clearTimeout(timer);
-
-        const prevSlide = slides[current];
-        const prevVideo = prevSlide.querySelector('video');
-        if (prevVideo) {
-          prevVideo.pause();
-          prevVideo.currentTime = 0;
-        }
-        prevSlide.classList.remove('active');
-
-        current = index % slides.length;
-        const slide = slides[current];
-        slide.classList.add('active');
-
-        const video = slide.querySelector('video');
-        if (video) {
-          video.muted = isMuted;
-          video.addEventListener('ended', () => goToSlide(current + 1), { once: true });
-          video.addEventListener('error', () => goToSlide(current + 1), { once: true });
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              video.muted = true;
-              isMuted = true;
-              muteBtn.innerHTML = iconMuted;
-              video.play();
-            });
-          }
-          preloadNext(current);
-        } else {
-          preloadNext(current);
-          timer = setTimeout(() => goToSlide(current + 1), 3000);
-        }
-      }
-
-      const firstVideo = slides[0].querySelector('video');
-      if (firstVideo) {
-        firstVideo.preload = 'auto';
-        firstVideo.muted = isMuted;
-        firstVideo.addEventListener('canplay', hideLoader, { once: true });
-        firstVideo.addEventListener('error', hideLoader, { once: true });
-        firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
-        firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
-        firstVideo.load();
-        const playPromise = firstVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            firstVideo.muted = true;
-            isMuted = true;
-            muteBtn.innerHTML = iconMuted;
-            firstVideo.play();
-          });
-        }
-        preloadNext(0);
-      } else {
-        hideLoader();
-        timer = setTimeout(() => goToSlide(1), 3000);
-      }
+      setTimeout(() => { loader.classList.add('fade-out'); setTimeout(() => loader.remove(), 600); }, 4000);
     </script>
   </body>
 </html>

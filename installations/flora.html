@@ -8,205 +8,64 @@
   </head>
   <body class="project">
     <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
-    <div class="project-image has-slideshow" id="slideshow">
-      <div class="slideshow-slide active">
-        <video muted playsinline>
+
+    <div class="project-header">
+      <a class="project-back" href="../index.html">← back</a>
+      <h1>Flora</h1>
+      <p>
+        Winner of the <a href="https://2025.amaze-berlin.de/award-winners/" target="_blank" rel="noopener noreferrer">Amaze Fest 2025 Explorer Award</a>.
+        Exhibited at the 2025 BCN Games Fest. Featured on the <a href="https://blog.arduino.cc/2024/10/18/technology-meets-creativity-in-two-interactive-art-student-projects/" target="_blank" rel="noopener noreferrer">Arduino Blog</a>.
+      </p>
+      <p>
+        <a href="https://www.youtube.com/watch?v=s-QiC-kuT5c&t=3s" target="_blank" rel="noopener noreferrer">Presentation video</a> ·
+        <a href="flora/dossier.html">Dossier</a>
+      </p>
+      <p>Flora is in crisis. This electronic garden has been cursed. The flowers no longer bloom, the snails have lost their shells, the river has run dry, and the entire landscape lies still, as if everything had shut down. It seems that all is lost, but with help, this ecosystem will shine again. This electronic garden needs to be cared for, someone to contemplate it and figure out how to reintegrate each species back into the cycle.</p>
+      <p>Flora is an interactive installation inspired by a natural ecosystem. It arises from the need to challenge individualistic dynamics and our lack of awareness of certain natural symbioses. The installation invites players to reconnect with forgotten skills, such as play and collaboration. It serves as a space for exploration, listening, and becoming part of a greater cycle.</p>
+      <p>This circular board features three-dimensional objects that simulate life through electronic elements, functioning in unity and cooperation. Movements are powered by four Arduinos that communicate with six sensors and nine actuators.</p>
+    </div>
+
+    <div class="media-grid">
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/installations/flora/1.mov" type="video/mp4" />
         </video>
       </div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/2.jpg');"
-      ></div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/3.jpg');"
-      ></div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/4.jpg');"
-      ></div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/5.jpg');"
-      ></div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/6.jpg');"
-      ></div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/7.jpg');"
-      ></div>
-      <div
-        class="slideshow-slide"
-        style="background-image: url('../assets/installations/flora/9.JPG');"
-      ></div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <img src="../assets/installations/flora/2.jpg" alt="flora" />
+      </div>
+      <div class="media-item">
+        <img src="../assets/installations/flora/3.jpg" alt="flora" />
+      </div>
+      <div class="media-item">
+        <img src="../assets/installations/flora/4.jpg" alt="flora" />
+      </div>
+      <div class="media-item">
+        <img src="../assets/installations/flora/5.jpg" alt="flora" />
+      </div>
+      <div class="media-item">
+        <img src="../assets/installations/flora/6.jpg" alt="flora" />
+      </div>
+      <div class="media-item">
+        <img src="../assets/installations/flora/7.jpg" alt="flora" />
+      </div>
+      <div class="media-item">
+        <img src="../assets/installations/flora/9.JPG" alt="flora" />
+      </div>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/installations/flora/8.MP4" type="video/mp4" />
         </video>
       </div>
     </div>
 
-    <div class="project-content">
-      <a class="project-back" href="../index.html">← back</a>
-      <h1>Flora</h1>
-      <p>
-        Winner of the
-        <a
-          href="https://2025.amaze-berlin.de/award-winners/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Amaze Fest 2025 Explorer Award</a
-        >. Exhibited at the 2025 BCN Games Fest. Featured on the
-        <a
-          href="https://blog.arduino.cc/2024/10/18/technology-meets-creativity-in-two-interactive-art-student-projects/"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Arduino Blog</a
-        >.
-      </p>
-
-      <p>
-        <a href="https://www.youtube.com/watch?v=s-QiC-kuT5c&t=3s" target="_blank" rel="noopener noreferrer">Presentation video</a> ·
-        <a href="flora/dossier.html">Dossier</a>
-      </p>
-
-      <p>
-        Flora is in crisis. This electronic garden has been cursed. The flowers no longer bloom, the snails have lost
-        their shells, the river has run dry, and the entire landscape lies still, as if everything had shut down. It
-        seems that all is lost, but with help, this ecosystem will shine again. This electronic garden needs to be cared
-        for, someone to contemplate it and figure out how to reintegrate each species back into the cycle.
-      </p>
-      <p>
-        Flora is an interactive installation inspired by a natural ecosystem. It arises from the need to challenge
-        individualistic dynamics and our lack of awareness of certain natural symbioses. The installation invites players
-        to reconnect with forgotten skills, such as play and collaboration. It serves as a space for exploration,
-        listening, and becoming part of a greater cycle. Players uncover the relationships between organisms and help
-        them communicate and thrive in harmony.
-      </p>
-      <p>
-        This circular board features three-dimensional objects that simulate life through electronic elements,
-        functioning in unity and cooperation. Movements are powered by four Arduinos that communicate with six sensors
-        and nine actuators. For example, planting a seed is simulated by inserting a moisture sensor into damp soil.
-        When the sensor detects increased moisture, the code activates the water pump and other actuators, simulating
-        the flow of a river and the blooming of flowers. Additionally, when the snail moves, a card beneath its body
-        triggers a response as it passes over the RFID reader, illuminating magical stones that unlock various
-        abilities.
-      </p>
-
-      <p>
-        Playtime connects us with the freedom of being in a space where rules are shaped by unique experiences.
-        Sometimes, there may be no purpose at all. Play for the joy of playing, and allow yourself to be surprised by
-        the sound, colors, and textures.
-      </p>
-    </div>
-
     <script>
-      const slides = document.querySelectorAll('.slideshow-slide');
-      let current = 0;
-      let timer = null;
-
       const loader = document.getElementById('pageLoader');
-      let loaderHidden = false;
-      const loaderFallback = setTimeout(() => hideLoader(), 5000);
-
-      function hideLoader() {
-        if (loaderHidden) return;
-        loaderHidden = true;
-        clearTimeout(loaderFallback);
+      window.addEventListener('load', () => {
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
-      }
-
-      function preloadNext(idx) {
-        const nextVideo = slides[(idx + 1) % slides.length].querySelector('video');
-        if (nextVideo && !nextVideo.dataset.preloaded) {
-          nextVideo.preload = 'auto';
-          nextVideo.load();
-          nextVideo.dataset.preloaded = 'true';
-        }
-      }
-
-      slides.forEach((slide) => {
-        const video = slide.querySelector('video');
-        if (!video) return;
-        video.addEventListener('loadedmetadata', () => {
-          if (video.videoHeight > video.videoWidth) {
-            video.style.objectFit = 'contain';
-          }
-        });
       });
-
-      slides.forEach((slide) => {
-        const bg = slide.style.backgroundImage;
-        if (!bg) return;
-        const match = bg.match(/url\(['"]?([^'"]+)['"]?\)/);
-        if (!match) return;
-        const img = new Image();
-        img.onload = () => {
-          if (img.naturalHeight > img.naturalWidth) {
-            slide.style.backgroundSize = 'contain';
-            slide.style.backgroundRepeat = 'no-repeat';
-          }
-        };
-        img.src = match[1];
-      });
-
-      function goToSlide(index) {
-        clearTimeout(timer);
-
-        const prevSlide = slides[current];
-        const prevVideo = prevSlide.querySelector('video');
-        if (prevVideo) {
-          prevVideo.pause();
-          prevVideo.currentTime = 0;
-        }
-        prevSlide.classList.remove('active');
-
-        current = index % slides.length;
-        const slide = slides[current];
-        slide.classList.add('active');
-
-        const video = slide.querySelector('video');
-        if (video) {
-          video.addEventListener('ended', () => goToSlide(current + 1), { once: true });
-          video.addEventListener('error', () => goToSlide(current + 1), { once: true });
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              video.muted = true;
-              video.play();
-            });
-          }
-          preloadNext(current);
-        } else {
-          preloadNext(current);
-          timer = setTimeout(() => goToSlide(current + 1), 3000);
-        }
-      }
-
-      const firstVideo = slides[0].querySelector('video');
-      if (firstVideo) {
-        firstVideo.preload = 'auto';
-        firstVideo.addEventListener('canplay', hideLoader, { once: true });
-        firstVideo.addEventListener('error', hideLoader, { once: true });
-        firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
-        firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
-        firstVideo.load();
-        const playPromise = firstVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            firstVideo.muted = true;
-            firstVideo.play();
-          });
-        }
-        preloadNext(0);
-      } else {
-        hideLoader();
-        timer = setTimeout(() => goToSlide(1), 3000);
-      }
+      setTimeout(() => { loader.classList.add('fade-out'); setTimeout(() => loader.remove(), 600); }, 4000);
     </script>
   </body>
 </html>

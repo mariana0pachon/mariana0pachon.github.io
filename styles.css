@@ -289,8 +289,7 @@ body.index .site-footer a:hover {
 body.project {
   background-color: #fff;
   color: #111;
-  display: grid;
-  grid-template-columns: 1fr 360px;
+  display: block;
   min-height: 100vh;
 }
 
@@ -411,6 +410,77 @@ body.project .page-loader-dot {
   line-height: 1.8;
   color: #555;
   max-width: 280px;
+}
+
+/* ── Project gallery layout ───────────────────────── */
+
+.project-header {
+  padding: 48px 60px 48px;
+  max-width: 860px;
+}
+
+.project-header .project-back {
+  display: block;
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #bbb;
+  text-decoration: none;
+  margin-bottom: 28px;
+}
+
+.project-header .project-back:hover {
+  color: #111;
+}
+
+.project-header h1 {
+  font-family: var(--font-title);
+  font-size: 36px;
+  font-weight: normal;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: #111;
+  margin-bottom: 20px;
+}
+
+.project-header h5 {
+  font-size: 17px;
+  font-weight: normal;
+  letter-spacing: 0.03em;
+  color: #999;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.project-header p {
+  font-size: 20px;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.project-header p:last-child {
+  margin-bottom: 0;
+}
+
+.media-grid {
+  columns: 2;
+  column-gap: 4px;
+  padding: 0 4px 4px;
+}
+
+.media-item {
+  break-inside: avoid;
+  margin-bottom: 4px;
+  background: #f4f4f4;
+  line-height: 0;
+}
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* ── Page loader ──────────────────────────────────── */

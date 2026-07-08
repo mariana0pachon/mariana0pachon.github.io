@@ -8,149 +8,49 @@
   </head>
   <body class="project">
     <div class="page-loader" id="pageLoader"><div class="page-loader-dot"></div></div>
-    <div class="project-image has-slideshow" id="slideshow">
-      <div class="slideshow-slide active">
-        <video muted playsinline>
+
+    <div class="project-header">
+      <a class="project-back" href="../index.html">← back</a>
+      <h1>shrinking theatre</h1>
+      <p>A prototype of a theatre that shrinks while the main character of the play gets overwhelmed with their thoughts.</p>
+      <p>Built using 2 rack and pinion mechanisms, each with a continuous rotation Servo motor.</p>
+    </div>
+
+    <div class="media-grid">
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/shrinking_theatre/01.mov" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/shrinking_theatre/02.MOV" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/shrinking_theatre/03.mov" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/shrinking_theatre/04.MOV" type="video/mp4" />
         </video>
       </div>
-      <div class="slideshow-slide">
-        <video muted playsinline>
+      <div class="media-item">
+        <video muted autoplay loop playsinline>
           <source src="../assets/experiments/shrinking_theatre/05.MOV" type="video/mp4" />
         </video>
       </div>
     </div>
 
-    <div class="project-content">
-      <a class="project-back" href="../index.html">← back</a>
-      <h1>shrinking theatre</h1>
-      <p>
-        A prototype of a theatre that shrinks while the main character of the play gets overwhelmed with their thoughts.
-      </p>
-      <p>
-        Built using 2 rack and pinion mechanisms, each with a continuous rotation Servo motor.
-      </p>
-    </div>
-
     <script>
-      const slides = document.querySelectorAll('.slideshow-slide');
-      let current = 0;
-      let timer = null;
-
       const loader = document.getElementById('pageLoader');
-      let loaderHidden = false;
-      const loaderFallback = setTimeout(() => hideLoader(), 5000);
-
-      function hideLoader() {
-        if (loaderHidden) return;
-        loaderHidden = true;
-        clearTimeout(loaderFallback);
+      window.addEventListener('load', () => {
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
-      }
-
-      function preloadNext(idx) {
-        const nextVideo = slides[(idx + 1) % slides.length].querySelector('video');
-        if (nextVideo && !nextVideo.dataset.preloaded) {
-          nextVideo.preload = 'auto';
-          nextVideo.load();
-          nextVideo.dataset.preloaded = 'true';
-        }
-      }
-
-      slides.forEach((slide) => {
-        const video = slide.querySelector('video');
-        if (!video) return;
-        video.addEventListener('loadedmetadata', () => {
-          if (video.videoHeight > video.videoWidth) {
-            video.style.objectFit = 'contain';
-          }
-        });
       });
-
-      slides.forEach((slide) => {
-        const bg = slide.style.backgroundImage;
-        if (!bg) return;
-        const match = bg.match(/url\(['"]?([^'"]+)['"]?\)/);
-        if (!match) return;
-        const img = new Image();
-        img.onload = () => {
-          if (img.naturalHeight > img.naturalWidth) {
-            slide.style.backgroundSize = 'contain';
-            slide.style.backgroundRepeat = 'no-repeat';
-          }
-        };
-        img.src = match[1];
-      });
-
-      function goToSlide(index) {
-        clearTimeout(timer);
-
-        const prevSlide = slides[current];
-        const prevVideo = prevSlide.querySelector('video');
-        if (prevVideo) {
-          prevVideo.pause();
-          prevVideo.currentTime = 0;
-        }
-        prevSlide.classList.remove('active');
-
-        current = index % slides.length;
-        const slide = slides[current];
-        slide.classList.add('active');
-
-        const video = slide.querySelector('video');
-        if (video) {
-          video.addEventListener('ended', () => goToSlide(current + 1), { once: true });
-          video.addEventListener('error', () => goToSlide(current + 1), { once: true });
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              video.muted = true;
-              video.play();
-            });
-          }
-          preloadNext(current);
-        } else {
-          preloadNext(current);
-          timer = setTimeout(() => goToSlide(current + 1), 3000);
-        }
-      }
-
-      const firstVideo = slides[0].querySelector('video');
-      if (firstVideo) {
-        firstVideo.preload = 'auto';
-        firstVideo.addEventListener('canplay', hideLoader, { once: true });
-        firstVideo.addEventListener('error', hideLoader, { once: true });
-        firstVideo.addEventListener('ended', () => goToSlide(1), { once: true });
-        firstVideo.addEventListener('error', () => goToSlide(1), { once: true });
-        firstVideo.load();
-        const playPromise = firstVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            firstVideo.muted = true;
-            firstVideo.play();
-          });
-        }
-        preloadNext(0);
-      } else {
-        hideLoader();
-        timer = setTimeout(() => goToSlide(1), 3000);
-      }
+      setTimeout(() => { loader.classList.add('fade-out'); setTimeout(() => loader.remove(), 600); }, 4000);
     </script>
   </body>
 </html>
