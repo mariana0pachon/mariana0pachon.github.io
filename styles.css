@@ -70,7 +70,7 @@ body.index {
 .bg {
   position: fixed;
   inset: 0;
-  background-image: url('assets/bg/background.png');
+  background-image: url('assets/bg/background.jpg');
   background-size: cover;
   background-position: center;
   z-index: -2;
