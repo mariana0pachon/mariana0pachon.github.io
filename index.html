@@ -93,7 +93,7 @@
             <a
               class="work-item"
               href="experiments/circuit_bending.html"
-              data-preview="assets/experiments/circuit_bending/01.MOV"
+              data-preview="assets/experiments/circuit_bending/01.mov"
               data-preview-type="video"
               >circuit bending</a
             >
@@ -189,12 +189,7 @@
         }
       }
 
-      // Kick off all preloads immediately on page load
-      document.querySelectorAll('.work-item[data-preview]').forEach((item) => {
-        preloadAsset(item.dataset.preview, item.dataset.previewType || 'image');
-      });
-
-      // Hover: only reveal once the asset is confirmed ready (skip on touch devices)
+      // Hover: preload lazily on hover intent, reveal once ready (skip on touch devices)
       if (window.matchMedia('(hover: hover) and (pointer: fine)').matches)
         document
           .querySelectorAll('.work-item[data-preview]')
@@ -205,6 +200,7 @@
               hovering = true;
               const src = item.dataset.preview;
               const type = item.dataset.previewType || 'image';
+              preloadAsset(src, type);
 
               function show() {
                 if (!hovering) return;
