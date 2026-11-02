@@ -130,7 +130,7 @@
 
     <script>
       const loader = document.getElementById('pageLoader');
-      window.addEventListener('load', () => {
+      document.addEventListener('DOMContentLoaded', () => {
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
       });

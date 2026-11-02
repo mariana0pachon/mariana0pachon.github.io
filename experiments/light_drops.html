@@ -31,7 +31,7 @@
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
       }
-      window.addEventListener('load', hideLoader);
+      document.addEventListener('DOMContentLoaded', hideLoader);
       setTimeout(hideLoader, 3000);
     </script>
   </body>

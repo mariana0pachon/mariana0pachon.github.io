@@ -48,8 +48,11 @@
 
     <div class="media-grid">
       <div class="media-item">
-        <video muted autoplay loop playsinline>
-          <source src="../assets/installations/flora/1.mov" type="video/mp4" />
+        <video class="lazy-video" muted loop playsinline preload="none">
+          <source
+            data-src="../assets/installations/flora/1.mov"
+            type="video/mp4"
+          />
         </video>
       </div>
       <div class="media-item">
@@ -160,15 +163,18 @@
         />
       </div>
       <div class="media-item">
-        <video muted autoplay loop playsinline>
-          <source src="../assets/installations/flora/8.MP4" type="video/mp4" />
+        <video class="lazy-video" muted loop playsinline preload="none">
+          <source
+            data-src="../assets/installations/flora/8.MP4"
+            type="video/mp4"
+          />
         </video>
       </div>
     </div>
 
     <script>
       const loader = document.getElementById('pageLoader');
-      window.addEventListener('load', () => {
+      document.addEventListener('DOMContentLoaded', () => {
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
       });
@@ -176,6 +182,26 @@
         loader.classList.add('fade-out');
         setTimeout(() => loader.remove(), 600);
       }, 4000);
+    </script>
+    <script>
+      document.querySelectorAll('video.lazy-video').forEach((video) => {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const source = video.querySelector('source[data-src]');
+              if (source) {
+                source.src = source.dataset.src;
+                video.load();
+              }
+              video.play().catch(() => {});
+              io.unobserve(video);
+            });
+          },
+          { rootMargin: '300px 0px' }
+        );
+        io.observe(video);
+      });
     </script>
   </body>
 </html>
